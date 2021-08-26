@@ -56,19 +56,18 @@ func depack_lv {
   factor1=x factor2=a=[LV_SIZE_PACKED] mul8x8
 
   a=&>levels c- a+prodH .CURRENT_LV+2=a
-  a=&<levels c- a+prodL .CURRENT_LV+1=a c+?{ .CURRENT_LV+2++ } 
+  a=&<levels c- a+prodL .CURRENT_LV+1=a c+?{ .CURRENT_LV+2++ }
 
-  count_depack=x=[LV_SIZE] y=[LV_SIZE_PACKED]
+  y=[LV_SIZE] count_depack=x=[LV_SIZE_PACKED]
   {
-    .CURRENT_LV: a=levels,y
+    x=count_depack .CURRENT_LV: a=levels,x
     
-    a!! a&0b00001111 x=a a=trans_tile,x
-    count_depack-- x=count_depack level,x=a
-    
-    a?? a&0b11110000 a>> a>> a>> a>> x=a a=trans_tile,x
-    count_depack-- x=count_depack level,x=a 
+    a!! a&0b00001111
+    x=a y-- level,y=a=trans_tile,x
+    a?? a&0b11110000 a>> a>> a>> a>>
+    x=a y-- level,y=a=trans_tile,x
 
-    y--
+    count_depack--
   } !=
 }
 
