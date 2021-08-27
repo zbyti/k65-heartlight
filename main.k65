@@ -92,8 +92,8 @@ func draw_lv {
   .LT+1=.LD+1=a=&<screen_t+224   .RT+1=.RD+1=a=&<screen_t+225
   .LT+2=.RT+2=a=&>screen_t+0x100 .LD+2=.RD+2=a=&>screen_d+0x100
   
-  y=[LV_SIZE] {
-    a=level,y
+  y=[LV_SIZE+1] {
+    a=level-1,y
 
     x=a .LT: screen_t=x x++ .RT: screen_t+1=x //LT - left top,  RT - right top
     a|0x20 
@@ -102,7 +102,7 @@ func draw_lv {
     //move 2x2 brush to left from bottom right corner of the screen
     c+ a=.LT+1 a-2 .LT+1=.LD+1=a c-?{ .LT+2-- .RT+2-- .LD+2-- .RD+2-- } x=a x++ .RT+1=.RD+1=x
 
-    y-- y?0xFF
+    y--
   } !=
 }
 
