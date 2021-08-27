@@ -76,15 +76,15 @@ func create_game_dl {
   game_dl=game_dl+1=game_dl+2=a=0x70
 
   x=72 {
+    game_dl,x=game_dl-3,x=a=0x44         // LMS + MODE 4
 
-    game_dl,x=a=0x44 a?? game_dl+1,x=a a!! game_dl+2,x=a=y
+    a?? game_dl+1,x=game_dl-2,x=a a!!    // LMS LO byte
+    
+    game_dl+2,x=a=y c+ a-2 game_dl-1,x=a // LMS HI byte
 
-    a=x a&1 z-?{
-      a=y c+ a-2 game_dl+2,x=a
-      a?? a-40 a!! c-?{ y-- }
-    }
+    a?? a-40 a!! c-?{ y-- }
 
-    x-- x-- x--
+    a=x c+ a-6 x=a
   } !=
 
   game_dl+75=a=0x41 game_dl+76=a=&<game_dl game_dl+77=a=&>game_dl
