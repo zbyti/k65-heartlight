@@ -15,9 +15,9 @@
   LV_SIZE        = 0xF0
   LV_SIZE_PACKED = 0x78
   LV_START       = 1
-  SCREEN_TOP     = 0x0200  //0x0200 bytes
-  SCREEN_DOWN    = 0x0400  //0x0200 bytes
+  SCREEN         = 0x0200  //0x0400 bytes
   LEVEL          = 0x0600  //0x00F0 bytes
+  GAME_DL        = 0x0700  //0x004E bytes  
   GFX_GAME       = 0x1C00  //0x0400 bytes
   LEVELS         = 0x2000
 ]
@@ -38,7 +38,59 @@ var slid_count=[LEVEL+LV_SIZE]
 // aliases
 //-----------------------------------------------------------------------------
 
-var screen_t=[SCREEN_TOP], screen_d=[SCREEN_DOWN], level=[LEVEL]
+var screen=[SCREEN], game_dl=[GAME_DL], level=[LEVEL]
+
+//-----------------------------------------------------------------------------
+// Create game display list
+//-----------------------------------------------------------------------------
+// 0700: 3x 8 BLANK
+// 0703: LMS 0200 MODE 4
+// 0706: LMS 0400 MODE 4
+// 0709: LMS 0228 MODE 4
+// 070C: LMS 0428 MODE 4
+// 070F: LMS 0250 MODE 4
+// 0712: LMS 0450 MODE 4
+// 0715: LMS 0278 MODE 4
+// 0718: LMS 0478 MODE 4
+// 071B: LMS 02A0 MODE 4
+// 071E: LMS 04A0 MODE 4
+// 0721: LMS 02C8 MODE 4
+// 0724: LMS 04C8 MODE 4
+// 0727: LMS 02F0 MODE 4
+// 072A: LMS 04F0 MODE 4
+// 072D: LMS 0318 MODE 4
+// 0730: LMS 0518 MODE 4
+// 0733: LMS 0340 MODE 4
+// 0736: LMS 0540 MODE 4
+// 0739: LMS 0368 MODE 4
+// 073C: LMS 0568 MODE 4
+// 073F: LMS 0390 MODE 4
+// 0742: LMS 0590 MODE 4
+// 0745: LMS 03B8 MODE 4
+// 0748: LMS 05B8 MODE 4
+// 074B: JVB 0700
+//-----------------------------------------------------------------------------
+func create_game_dl {
+  a=&<screen+0xB8 a!! y=&>screen+0x300
+
+  game_dl=game_dl+1=game_dl+2=a=0x70
+
+  x=72 {
+
+    game_dl,x=a=0x44 a?? game_dl+1,x=a a!! game_dl+2,x=a=y
+
+    a=x a&1 z-?{
+      a=y c+ a-2 game_dl+2,x=a
+      a?? a-40 a!! c-?{ y-- }
+    }
+
+    x-- x-- x--
+  } !=
+
+  game_dl+75=a=0x41 game_dl+76=a=&<game_dl game_dl+77=a=&>game_dl
+
+  a??
+}
 
 //-----------------------------------------------------------------------------
 // initialize system
@@ -52,10 +104,10 @@ inline init {
   i+ d- NMIEN=DMACTL=PORTA=GRACTL=AUDCTL=a=0 SKCTL=a=3 PORTB=a=0xFE s=x=0xFF
 
   CHBASE=a=&>gfx_game
-  DLISTL=a=&<dl DLISTH=a=&>dl
+  DLISTL=a=&<game_dl DLISTH=a=&>game_dl
   NMIADL=a=&<nmi NMIADH=a=&>nmi
 
-  set_colors
+  set_colors create_game_dl
 
   DMACTL=a=0b00100010 NMIEN=a=0x40
 }
@@ -88,18 +140,18 @@ func depack_lv {
 //-----------------------------------------------------------------------------
 
 func draw_lv {
-  //reset 2x2 brush SMC vector
-  .LT+1=.LD+1=a=&<screen_t+224   .RT+1=.RD+1=a=&<screen_t+225
-  .LT+2=.RT+2=a=&>screen_t+0x100 .LD+2=.RD+2=a=&>screen_d+0x100
+  //reset 2x2 brush SMC vector to the bottom right corner
+  .LT+1=.LD+1=a=&<screen+224   .RT+1=.RD+1=a=&<screen+225
+  .LT+2=.RT+2=a=&>screen+0x100 .LD+2=.RD+2=a=&>screen+0x300
   
   y=[LV_SIZE+1] {
     a=level-1,y
 
-    x=a .LT: screen_t=x x++ .RT: screen_t+1=x //LT - left top,  RT - right top
+    x=a .LT: screen=x       x++ .RT: screen+1=x 
     a|0x20 
-    x=a .LD: screen_d=x x++ .RD: screen_d+1=x //LD - left down, RD - right down
+    x=a .LD: screen+0x200=x x++ .RD: screen+0x201=x
 
-    //move 2x2 brush to left from bottom right corner of the screen
+    //move 2x2 brush to left
     c+ a=.LT+1 a-2 .LT+1=.LD+1=a c-?{ .LT+2-- .RT+2-- .LD+2-- .RD+2-- } x=a x++ .RT+1=.RD+1=x
 
     y--

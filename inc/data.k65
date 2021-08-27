@@ -1,14 +1,14 @@
-//>--------------------------------------------#
-//   empty       0x00,0x00,0x00,0x00 |  0 | 1  |
-// % strong wall 0x1E,0x1F,0x3E,0x3F | 30 | 2  |
-// # weak wall   0x0A,0x0B,0x2A,0x2B | 10 | 3  |
-// @ stone       0x0C,0x0D,0x2C,0x2D | 12 | 4  |
-// $ heart       0x10,0x11,0x30,0x31 | 16 | 5  |
-// * hero        0x18,0x19,0x38,0x39 | 24 | 6  |
-// ! exit        0x1C,0x1D,0x3C,0x3D | 28 | 7  |
-// & bomb        0x12,0x13,0x32,0x33 | 18 | 8  |
-// . grass       0x0E,0x0F,0x2E,0x2F | 14 | 9  |
-//>--------------------------------------------#
+//#--------------------------------------------#
+//|   empty       0x00,0x00,0x00,0x00 |  0 | 1 |
+//| % strong wall 0x1E,0x1F,0x3E,0x3F | 30 | 2 |
+//| # weak wall   0x0A,0x0B,0x2A,0x2B | 10 | 3 |
+//| @ stone       0x0C,0x0D,0x2C,0x2D | 12 | 4 |
+//| $ heart       0x10,0x11,0x30,0x31 | 16 | 5 |
+//| * hero        0x18,0x19,0x38,0x39 | 24 | 6 |
+//| ! exit        0x1C,0x1D,0x3C,0x3D | 28 | 7 |
+//| & bomb        0x12,0x13,0x32,0x33 | 18 | 8 |
+//| . grass       0x0E,0x0F,0x2E,0x2F | 14 | 9 |
+//#--------------------------------------------#
 
 data trans_tile {
   0 0x00 0x1E 0x0A 0x0C 0x10 0x18 0x1C 0x12 0x0E
@@ -26,38 +26,6 @@ data gfx_game {
 data levels {
   address [LEVELS]
   binary "levels/lv_packed.bin"
-}
-
-//-----------------------------------------------------------------------------
-
-data dl {
-  nocross
-  for x=1..3 eval [ 0x70 ]
-  0x44    &<screen_t        &>screen_t
-  0x44    &<screen_d        &>screen_d
-  0x44    &<screen_t+40     &>screen_t
-  0x44    &<screen_d+40     &>screen_d
-  0x44    &<screen_t+80     &>screen_t
-  0x44    &<screen_d+80     &>screen_d
-  0x44    &<screen_t+120    &>screen_t
-  0x44    &<screen_d+120    &>screen_d
-  0x44    &<screen_t+160    &>screen_t
-  0x44    &<screen_d+160    &>screen_d
-  0x44    &<screen_t+200    &>screen_t
-  0x44    &<screen_d+200    &>screen_d
-  0x44    &<screen_t+240    &>screen_t
-  0x44    &<screen_d+240    &>screen_d
-  0x44    &<screen_t+24     &>screen_t+0x100
-  0x44    &<screen_d+24     &>screen_d+0x100
-  0x44    &<screen_t+64     &>screen_t+0x100
-  0x44    &<screen_d+64     &>screen_d+0x100  
-  0x44    &<screen_t+104    &>screen_t+0x100
-  0x44    &<screen_d+104    &>screen_d+0x100  
-  0x44    &<screen_t+144    &>screen_t+0x100
-  0x44    &<screen_d+144    &>screen_d+0x100 
-  0x44    &<screen_t+184    &>screen_t+0x100
-  0x44    &<screen_d+184    &>screen_d+0x100        
-  0x41 &<dl &>dl
 }
 
 //-----------------------------------------------------------------------------
