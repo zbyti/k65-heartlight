@@ -15,18 +15,30 @@
   LV_SIZE        = 0xF0
   LV_SIZE_PACKED = 0x78
   LV_START       = 1
-  SCREEN_1       = 0x0200  //0x0200 bytes
-  SCREEN_2       = 0x0400  //0x0200 bytes
+  SCREEN_TOP     = 0x0200  //0x0200 bytes
+  SCREEN_DOWN    = 0x0400  //0x0200 bytes
   LEVEL          = 0x0600  //0x00F0 bytes
   GFX_GAME       = 0x1C00  //0x0400 bytes
   LEVELS         = 0x2000
 ]
 
 //-----------------------------------------------------------------------------
+// ZERO PAGE
+//-----------------------------------------------------------------------------
 
 var count_1=0, count_2, count_depack, tmp_a, tmp_b, p_tmp[2], w_tmp[2]
 
-var screen_1=[SCREEN_1], screen_2=[SCREEN_2], level=[LEVEL]
+//-----------------------------------------------------------------------------
+// lazy variables
+//-----------------------------------------------------------------------------
+
+var slid_count=[LEVEL+LV_SIZE]
+
+//-----------------------------------------------------------------------------
+// aliases
+//-----------------------------------------------------------------------------
+
+var screen_t=[SCREEN_TOP], screen_d=[SCREEN_DOWN], level=[LEVEL]
 
 //-----------------------------------------------------------------------------
 // initialize system
@@ -58,7 +70,7 @@ func depack_lv {
   a=&>levels c- a+prodH .CURRENT_LV+2=a
   a=&<levels c- a+prodL .CURRENT_LV+1=a c+?{ .CURRENT_LV+2++ }
 
-  y=[LV_SIZE] count_depack=x=[LV_SIZE_PACKED]
+  y=[LV_SIZE] count_depack=a=[LV_SIZE_PACKED]
   {
     x=count_depack .CURRENT_LV: a=levels,x
     
@@ -77,15 +89,15 @@ func depack_lv {
 
 func draw_lv {
   //reset 2x2 brush SMC vector
-  .LT+1=.LD+1=a=&<screen_1+224 .RT+1=.RD+1=a=&<screen_1+225
-  .LT+2=.RT+2=a=&>screen_1+0x100 .LD+2=.RD+2=a=&>screen_2+0x100
+  .LT+1=.LD+1=a=&<screen_t+224   .RT+1=.RD+1=a=&<screen_t+225
+  .LT+2=.RT+2=a=&>screen_t+0x100 .LD+2=.RD+2=a=&>screen_d+0x100
   
   y=[LV_SIZE] {
     a=level,y
 
-    x=a .LT: screen_1=x x++ .RT: screen_1+1=x //2x2 brush LT - left top,  RT - right top
+    x=a .LT: screen_t=x x++ .RT: screen_t+1=x //LT - left top,  RT - right top
     a|0x20 
-    x=a .LD: screen_2=x x++ .RD: screen_2+1=x //2x2 brush LD - left down, RF - right down
+    x=a .LD: screen_d=x x++ .RD: screen_d+1=x //LD - left down, RD - right down
 
     //move 2x2 brush to left from bottom right corner of the screen
     c+ a=.LT+1 a-2 .LT+1=.LD+1=a c-?{ .LT+2-- .RT+2-- .LD+2-- .RD+2-- } x=a x++ .RT+1=.RD+1=x
@@ -95,9 +107,9 @@ func draw_lv {
 }
 
 func slideshow {
-  count_1=a=[LV_START]
+  slid_count=a=[LV_START]
   {
-    x=count_1 x?levels =={ goto slideshow } count_1++
+    x=slid_count x?levels =={ goto slideshow } slid_count++
     depack_lv draw_lv wait4s
   } always  
 }
@@ -133,7 +145,4 @@ main {
 
 //-----------------------------------------------------------------------------
 
-data levels {
-  address [LEVELS]
-  binary "levels/data.bin"
-}
+

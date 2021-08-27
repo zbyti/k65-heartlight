@@ -10,7 +10,7 @@
 
 # open my $levels, '<', $ARGV[0] or die "$ARGV[0]: $!\n";
 open my $levels, '<', 'levels/all.txt' or die "$!\n";
-open my $data, '>', 'levels/data.bin' or die "$!\n";
+open my $data, '>', 'levels/lv_packed.bin' or die "$!\n";
 
 # header - number of levels
 print $data chr(0);

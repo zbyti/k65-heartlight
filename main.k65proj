@@ -6,8 +6,7 @@ inc/registers.k65               main
 inc/os.k65                      main
 inc/tools.k65                   main
 main.k65                        main
-inc/antic.k65                   main
-inc/gfx.k65                     main
+inc/data.k65                    main
 
 -o /dev/shm/main.xex
 
