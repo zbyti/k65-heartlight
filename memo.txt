@@ -1,0 +1,6 @@
+-----------------------------------------------------------------------------
+
+ dla kawału umieścić cześć jednorazowych procedur (np. tworzących DL) w miejscu,
+ które zostanie nadpisane (ekran, depack itp.)
+
+-----------------------------------------------------------------------------
