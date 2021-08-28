@@ -1,4 +1,7 @@
 //-----------------------------------------------------------------------------
+// dla kawału umieścić cześć jednorazowych procedur (tworzących DL) w miejscu,
+// które zostanie nadpisane (ekran, depack)
+//-----------------------------------------------------------------------------
 
 [
   STRONG_WALL = 0x1E
@@ -79,7 +82,7 @@ func create_game_dl {
     game_dl,x=game_dl-3,x=a=0x44         // LMS + MODE 4
 
     a?? game_dl+1,x=game_dl-2,x=a a!!    // LMS LO byte
-    
+
     game_dl+2,x=a=y c+ a-2 game_dl-1,x=a // LMS HI byte
 
     a?? a-40 a!! c-?{ y-- }
