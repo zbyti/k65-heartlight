@@ -4,3 +4,5 @@
  które zostanie nadpisane (ekran, depack itp.)
 
 -----------------------------------------------------------------------------
+
+Packer: 15 różnych znaków rozwijanych do kafelka 2x2 w MODE 4 można zapisać jako %1111 %1111 i ubkaować w stkosunku 2 do 1. Plansza z MODE 4 kompresuje się do 1 znaku 0-15 a te pakuję po 2 w bajt.

@@ -103,7 +103,9 @@ inline set_colors { COLPF0=a=4 COLPF1=a=6 COLPF2=a=0xE COLPF3=a=0xA COLBK=a=0 }
 inline init {
   pause
 
-  i+ d- NMIEN=DMACTL=PORTA=GRACTL=AUDCTL=a=0 SKCTL=a=3 PORTB=a=0xFE s=x=0xFF
+  i+ d- NMIEN=DMACTL=PORTA=PRIOR=GRACTL=AUDCTL=SKCTL=a=0
+  CHACTL=a=2 SKCTL=a=3 a=PACTL a|4 PACTL=a PORTB=a=0xFE
+  s=x=0xFF
 
   CHBASE=a=&>gfx_game
   DLISTL=a=&<game_dl DLISTH=a=&>game_dl
@@ -143,18 +145,18 @@ func depack_lv {
 
 func draw_lv {
   //reset 2x2 brush SMC vector to the bottom right corner
-  .LT+1=.LD+1=a=&<screen+224   .RT+1=.RD+1=a=&<screen+225
-  .LT+2=.RT+2=a=&>screen+0x100 .LD+2=.RD+2=a=&>screen+0x300
+  .LT+1=.LB+1=a=&<screen+224   .RT+1=.RB+1=a=&<screen+225
+  .LT+2=.RT+2=a=&>screen+0x100 .LB+2=.RB+2=a=&>screen+0x300
   
   y=[LV_SIZE+1] {
     a=level-1,y
 
     x=a .LT: screen=x       x++ .RT: screen+1=x 
     a|0x20 
-    x=a .LD: screen+0x200=x x++ .RD: screen+0x201=x
+    x=a .LB: screen+0x200=x x++ .RB: screen+0x201=x
 
     //move 2x2 brush to left
-    c+ a=.LT+1 a-2 .LT+1=.LD+1=a c-?{ .LT+2-- .RT+2-- .LD+2-- .RD+2-- } x=a x++ .RT+1=.RD+1=x
+    c+ a=.LT+1 a-2 .LT+1=.LB+1=a c-?{ .LT+2-- .RT+2-- .LB+2-- .RB+2-- } x=a x++ .RT+1=.RB+1=x
 
     y--
   } !=
